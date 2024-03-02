@@ -1,5 +1,6 @@
 package com.BillyCode.orderservice.Service;
 
+import com.BillyCode.orderservice.Dtos.InventoryResponse;
 import com.BillyCode.orderservice.Model.Order;
 import com.BillyCode.orderservice.Model.OrderLineItems;
 import com.BillyCode.orderservice.Model.OrderLineItemsDto;
@@ -7,6 +8,8 @@ import com.BillyCode.orderservice.Model.RequestOrder;
 import com.BillyCode.orderservice.Repository.OrderLineItemsRepository;
 import com.BillyCode.orderservice.Repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -34,14 +37,20 @@ public class OrderService {
         OrderLineItems orderLineItems = new OrderLineItems();
         orderLineItems.setOrder(order);
         orderLineItems.getOrder().setId(order.getId());
+        var skuCodes = order.getOrderLineItemsList().stream().map(OrderLineItems::getSkuCode)
+                .toList();
 
         // call an HTTP Get for the inventory service
-        var result = webClient.get()
-                .uri("http://localhost:8081/api/inventory")
+        InventoryResponse[] result = webClient.get()
+                .uri("http://localhost:8081/api/inventory",uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToMono(InventoryResponse[].class)
                 .block();
-        if(Boolean.TRUE.equals(result))
+
+        assert result != null;
+        boolean present = Arrays.stream(result).allMatch(InventoryResponse::isInStock);
+
+        if(present)
         {
             orderLineItemsRepository.saveAll(orderLineItemsList);
             orderRepository.save(order);
@@ -49,6 +58,8 @@ public class OrderService {
         }else {
             throw new IllegalArgumentException("item is not in stock , tr again later");
         }
+
+
 
 
 

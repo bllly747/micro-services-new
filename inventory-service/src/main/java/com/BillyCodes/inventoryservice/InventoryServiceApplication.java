@@ -25,7 +25,7 @@ public class InventoryServiceApplication {
 			// adding data into the database
 
 			Inventory inventory = new Inventory();
-			inventory.setQuantity(55);
+			inventory.setQuantity(0);
 			inventory.setSkuCode("iphone-13");
 
 			Inventory inventory1 = new Inventory();
