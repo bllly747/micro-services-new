@@ -42,12 +42,11 @@ public class OrderService {
 
         // call an HTTP Get for the inventory service
         InventoryResponse[] result = webClient.get()
-                .uri("http://localhost:8081/api/inventory",uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
+                .uri("http://localhost:8085/api/inventory",uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
                 .block();
 
-        assert result != null;
         boolean present = Arrays.stream(result).allMatch(InventoryResponse::isInStock);
 
         if(present)
@@ -58,15 +57,6 @@ public class OrderService {
         }else {
             throw new IllegalArgumentException("item is not in stock , tr again later");
         }
-
-
-
-
-
-
-
-
-
     }
 
     private OrderLineItems mapDto(OrderLineItemsDto orderLineItemsDto) {

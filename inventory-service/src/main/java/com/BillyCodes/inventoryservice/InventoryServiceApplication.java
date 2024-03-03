@@ -27,8 +27,8 @@ public class InventoryServiceApplication {
 			// adding data into the database
 
 			Inventory inventory = new Inventory();
-			inventory.setQuantity(0);
-			inventory.setSkuCode("iphone-13");
+			inventory.setQuantity(15);
+			inventory.setSkuCode("BMW M4");
 
 			Inventory inventory1 = new Inventory();
 			inventory1.setQuantity(2);
@@ -36,6 +36,8 @@ public class InventoryServiceApplication {
 
 			inventoryRepository.save(inventory1);
 			inventoryRepository.save(inventory);
+
+
 
 
 		};
