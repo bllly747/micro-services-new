@@ -21,7 +21,7 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 server:
-  port: 8087
+  port: 8091
 
 
 

@@ -22,7 +22,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderLineItemsRepository orderLineItemsRepository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClient;
 
     public void placeOrder(RequestOrder requestOrder)
     {
@@ -41,8 +41,8 @@ public class OrderService {
                 .toList();
 
         // call an HTTP Get for the inventory service
-        InventoryResponse[] result = webClient.get()
-                .uri("http://localhost:8085/api/inventory",uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
+        InventoryResponse[] result = webClient.build().get()
+                .uri("http://inventory-service/api/inventory",uriBuilder -> uriBuilder.queryParam("skuCode",skuCodes).build())
                 .retrieve()
                 .bodyToMono(InventoryResponse[].class)
                 .block();
